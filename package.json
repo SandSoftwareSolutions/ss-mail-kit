@@ -1,0 +1,58 @@
+{
+  "name": "@sandsoftwaresolutions/mail-kit",
+  "version": "0.1.0",
+  "description": "Send good-looking email from Node with no dependencies: SMTP (Zoho, Gmail, ...) and Resend, templates that work in Outlook and dark mode, automatic text version, safe by default, retries without double-sending.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./src/index.d.ts",
+        "default": "./src/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "src",
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test && node scripts/build-cjs.mjs --check",
+    "pack:check": "npm pack --dry-run",
+    "build": "node scripts/build-cjs.mjs",
+    "prepack": "node scripts/build-cjs.mjs"
+  },
+  "keywords": [
+    "email",
+    "mail",
+    "smtp",
+    "resend",
+    "template",
+    "transactional",
+    "mime",
+    "zoho"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SandSoftwareSolutions/ss-mail-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SandSoftwareSolutions/ss-mail-kit/issues"
+  },
+  "homepage": "https://github.com/SandSoftwareSolutions/ss-mail-kit#readme",
+  "publishConfig": {
+    "access": "public"
+  }
+}
