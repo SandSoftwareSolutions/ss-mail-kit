@@ -1,6 +1,6 @@
 {
   "name": "@sandsoftwaresolutions/mail-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Send good-looking email from Node with no dependencies: SMTP (Zoho, Gmail, ...) and Resend, templates that work in Outlook and dark mode, automatic text version, safe by default, retries without double-sending.",
   "type": "module",
   "main": "./dist/index.cjs",

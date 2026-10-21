@@ -119,6 +119,8 @@ export interface EmailOptions {
 }
 export interface Mail { subject: string; html: string; text: string }
 export function email(options: EmailOptions): Mail;
+/** Escape a name or any outside text before putting it in a block, so it cannot turn into a link, bold text or code. */
+export function escapeMarkup(value: unknown): string;
 export function preview(mail: Mail): string;
 export function lintEmail(mail: MessageInput | PreparedMessage): { level: "warning" | "info"; message: string }[];
 

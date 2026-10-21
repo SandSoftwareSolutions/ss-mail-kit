@@ -14,7 +14,11 @@ const color = (value, fallback, name) => {
 };
 
 // Inline markup used in every text block: **bold**, `code`, [label](https://url). Everything else is plain text.
-const INLINE = /\[([^\]\n]+)\]\(([^)\s]+)\)|\*\*([^*\n]+)\*\*|`([^`\n]+)`/g;
+// A backslash makes the next markup character literal; escapeMarkup() does that for text you did not write yourself.
+const INLINE = /\\([\\*`[\]()])|\[([^\]\n]+)\]\(([^)\s]+)\)|\*\*([^*\n]+)\*\*|`([^`\n]+)`/g;
+
+/** Makes a name, address or any other outside text safe to put inside a block: it can no longer become a link or bold text. */
+export const escapeMarkup = (value) => String(value).replace(/([\\*`[\]()])/g, "\\$1");
 
 function inlineHtml(text, theme) {
   let out = "";
@@ -22,16 +26,18 @@ function inlineHtml(text, theme) {
   for (const m of String(text).matchAll(INLINE)) {
     out += escapeHtml(text.slice(last, m.index));
     last = m.index + m[0].length;
-    if (m[1] !== undefined) {
-      out += LINKABLE.test(m[2]) ? `<a href="${escapeHtml(m[2])}" style="color:${theme.accent};text-decoration:underline;">${escapeHtml(m[1])}</a>` : escapeHtml(m[1]);
-    } else if (m[3] !== undefined) out += `<strong>${escapeHtml(m[3])}</strong>`;
-    else out += `<code class="ss-soft" style="font-family:Menlo,Consolas,monospace;font-size:0.95em;background:${theme.soft};padding:1px 5px;border-radius:4px;">${escapeHtml(m[4])}</code>`;
+    if (m[1] !== undefined) out += escapeHtml(m[1]);
+    else if (m[2] !== undefined) {
+      out += LINKABLE.test(m[3]) ? `<a href="${escapeHtml(m[3])}" style="color:${theme.accent};text-decoration:underline;">${escapeHtml(m[2])}</a>` : escapeHtml(m[2]);
+    } else if (m[4] !== undefined) out += `<strong>${escapeHtml(m[4])}</strong>`;
+    else out += `<code class="ss-soft" style="font-family:Menlo,Consolas,monospace;font-size:0.95em;background:${theme.soft};padding:1px 5px;border-radius:4px;">${escapeHtml(m[5])}</code>`;
   }
   return (out + escapeHtml(text.slice(last))).replace(/\n/g, "<br>");
 }
 
 function inlineText(text) {
-  return String(text).replace(INLINE, (_, label, url, bold, code) => {
+  return String(text).replace(INLINE, (_, escaped, label, url, bold, code) => {
+    if (escaped !== undefined) return escaped;
     if (label !== undefined) return LINKABLE.test(url) && label !== url ? `${label} (${url})` : label;
     return bold ?? code;
   });

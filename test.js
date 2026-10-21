@@ -9,7 +9,7 @@ import { test } from "node:test";
 import { TLSSocket, createServer as createTlsServer } from "node:tls";
 
 import {
-  MailError, block, createMailer, email, encodeWords, extractLinks, failoverTransport, htmlToText, isEmail, lintEmail, memoryTransport,
+  MailError, block, createMailer, email, encodeWords, escapeMarkup, extractLinks, failoverTransport, htmlToText, isEmail, lintEmail, memoryTransport,
   parseAddress, parseAddressList, prepareMessage, preview, quotedPrintable, resendTransport, smtpTransport,
 } from "./src/index.js";
 
@@ -183,6 +183,18 @@ test("escapes everything it is given and drops unsafe links", () => {
   assert.match(mail.html, /&lt;script&gt;/);
   assert.ok(!/<[^>]*onmouseover/i.test(mail.html), "no attribute injected into a tag");
   assert.match(mail.html, /<a href="https:\/\/ok\.nl\/\?a=1&amp;b=2"/);
+});
+
+test("outside text cannot become a link, bold text or code once escaped with escapeMarkup", () => {
+  const evil = "[klik](https://evil.example/phish) **groot** `code` \\ (x)";
+  const mail = email({ subject: "x", blocks: [`Hallo ${escapeMarkup(evil)}, welkom.`, block.list([escapeMarkup(evil)]), block.table([[escapeMarkup(evil), escapeMarkup(evil)]])] });
+  assert.ok(!mail.html.includes("evil.example/phish\""), "no href to the evil url");
+  assert.ok(!/<a href="https:\/\/evil/.test(mail.html));
+  assert.ok(!mail.html.includes("<strong>groot"));
+  assert.ok(!mail.html.includes("<code"));
+  assert.ok(mail.html.includes("[klik](https://evil.example/phish) **groot** `code` \\ (x)"));
+  assert.ok(mail.text.includes("Hallo [klik](https://evil.example/phish) **groot** `code` \\ (x), welkom."));
+  assert.match(email({ subject: "x", blocks: ["a \\* b"] }).html, /a \* b/);
 });
 
 test("rejects bad template input instead of producing a broken mail", () => {

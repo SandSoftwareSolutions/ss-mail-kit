@@ -40,7 +40,7 @@ Node 20 or newer. Works with `import` and `require()`, with TypeScript types for
 
 ## What you get
 
-**Templates that work.** `email()` makes table-based HTML with inline styles (Outlook, Gmail and Apple Mail), a phone layout, a dark-mode variant, a hidden preheader, and a **hand-written plain-text version from the same blocks** (not stripped HTML). Blocks: `heading`, paragraph (a plain string), `button`, `code` (verification codes), `list`, `table` (invoice rows), `note`, `divider`, `image`. Text blocks understand `**bold**`, `` `code` `` and `[label](https://url)`. Everything is escaped; unsafe links and invalid colors are refused, not passed through.
+**Templates that work.** `email()` makes table-based HTML with inline styles (Outlook, Gmail and Apple Mail), a phone layout, a dark-mode variant, a hidden preheader, and a **hand-written plain-text version from the same blocks** (not stripped HTML). Blocks: `heading`, paragraph (a plain string), `button`, `code` (verification codes), `list`, `table` (invoice rows), `note`, `divider`, `image`. Text blocks understand `**bold**`, `` `code` `` and `[label](https://url)`. **Text you did not write yourself** (a customer's name) goes through `escapeMarkup(name)` first, otherwise a name like `[click](https://evil)` would become a real link in your mail. Everything is HTML-escaped either way; unsafe links and invalid colors are refused, not passed through.
 
 **Transports.**
 
