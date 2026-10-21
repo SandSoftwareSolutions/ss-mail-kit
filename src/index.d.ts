@@ -3,6 +3,7 @@ export type AddressInput = string | { name?: string; address: string };
 export type AddressesInput = AddressInput | AddressInput[];
 
 export class MailError extends Error {
+  constructor(message: string, options?: { code?: string; retryable?: boolean; cause?: unknown; [extra: string]: unknown });
   /** invalid_address, invalid_header, invalid_message, invalid_template, invalid_config, no_recipients, auth_failed,
    *  recipient_rejected, rejected, temporary_failure, rate_limited, timeout, connection_failed, tls_failed,
    *  tls_unavailable, too_large, delivery_unknown, recipient_not_allowed, send_failed, ... */
